@@ -17,6 +17,8 @@ namespace gltf
 	struct Node
 	{
 		std::vector<int> children;
+		std::vector<float> matrix;
+		int mesh;
 	};
 
 	struct Scene
@@ -33,6 +35,7 @@ namespace gltf
 		Asset asset;
 		int scene;
 		std::vector<Scene> scenes;
+		std::vector<Node> nodes;
 	};
 
 	std::string getString(const Value &value, const std::string &key)
@@ -76,7 +79,7 @@ namespace gltf
 			const Value &scenes = document["scenes"];
 			model.scenes.reserve(scenes.Size());
 
-			for (auto &scene : scenes.GetArray())
+			for (const auto &scene : scenes.GetArray())
 			{
 				assert(scene.HasMember("nodes"));
 				Scene newScene;
@@ -89,6 +92,42 @@ namespace gltf
 		}
 
 		// nodes data
+		if (document.HasMember("nodes"))
+		{
+			assert(document["nodes"].IsArray());
+			model.nodes.reserve(document["nodes"].Size());
+
+			for (const auto &node : document["nodes"].GetArray())
+			{
+				assert(node.IsObject());
+				Node newNode;
+				if (node.HasMember("children"))
+				{
+					for (const auto &child : node["children"].GetArray())
+					{
+						newNode.children.push_back(child.GetInt());
+					}
+				}
+
+				if (node.HasMember("matrix"))
+				{
+					const auto &matrix = node["matrix"];
+					assert(matrix.IsArray());
+
+					newNode.matrix.reserve(matrix.Size());
+					for (const auto &value : matrix.GetArray())
+					{
+						newNode.matrix.push_back(value.GetFloat());
+					}
+				}
+
+				if (node.HasMember("mesh"))
+				{
+					newNode.mesh = node["mesh"].GetInt();
+				}
+				model.nodes.push_back(newNode);
+			}
+		}
 
 		return model;
 	}
