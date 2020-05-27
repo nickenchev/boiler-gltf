@@ -11,6 +11,45 @@ using namespace rapidjson;
 
 namespace gltf
 {
+	using byte_size = unsigned int;
+	struct Accessor
+	{
+		std::optional<int> bufferView;
+		int byteOffset;
+		int componentType;
+		bool normalized;
+		int count;
+		std::string type;
+
+		Accessor()
+		{
+			byteOffset = 0;
+			normalized = false;
+		}
+	};
+
+	struct BufferView
+	{
+		int buffer;
+		std::optional<byte_size> byteOffset;
+		std::optional<byte_size> byteLength;
+		std::optional<byte_size> byteStride;
+		std::optional<int> target;
+		std::string name;
+	};
+
+	struct Buffer
+	{
+		std::string uri;
+		byte_size byteLength;
+		std::string name;
+
+		Buffer(byte_size byteLength)
+		{
+			this->byteLength = byteLength;
+		}
+	};
+
 	struct Asset
 	{
 		std::string version, generator, copyright;
@@ -48,6 +87,7 @@ namespace gltf
 		std::vector<Scene> scenes;
 		std::vector<Node> nodes;
 		std::vector<Mesh> meshes;
+		std::vector<Buffer> buffers;
 	};
 
 	std::string getString(const Value &value, const std::string &key)
@@ -73,15 +113,11 @@ namespace gltf
 		}
 	}
 
-	Model load(const std::string &modelPath)
+	Model load(const std::string &&jsonData)
 	{
 		using namespace gltf;
-		std::ifstream t(modelPath);
-		std::stringstream buffer;
-		buffer << t.rdbuf();
-
 		Document document;
-		document.Parse(buffer.str().c_str());
+		document.Parse(jsonData.c_str());
 
 		using namespace gltf;
 		Model model;
@@ -154,13 +190,17 @@ namespace gltf
 
 		// meshes
 		assert(document.HasMember("meshes"));
-		for (const auto &mesh : document["meshes"].GetArray())
+		const auto &meshes = document["meshes"].GetArray();
+		model.meshes.reserve(meshes.Size());
+		for (const auto &mesh : meshes)
 		{
 			assert(mesh.IsObject());
 			Mesh newMesh;
 
 			assert(mesh.HasMember("primitives"));
-			for (const auto& primitive : mesh["primitives"].GetArray())
+			const auto primitives = mesh["primitives"].GetArray();
+			newMesh.primitives.reserve(primitives.Size());
+			for (const auto& primitive : primitives)
 			{
 				Primitive newPrimitive;
 				if (primitive.HasMember("attributes"))
@@ -180,13 +220,34 @@ namespace gltf
 			model.meshes.push_back(newMesh);
 		}
 
+		// accessors
+		assert(document.HasMember("accessors"));
+		const auto &accessors = document["accessors"].GetArray();
+
+		// buffers
+		assert(document.HasMember("buffers"));
+		const auto &buffers = document["buffers"];
+		model.buffers.reserve(buffers.GetArray().Size());
+		for (const auto &buffer : buffers.GetArray())
+		{
+			Buffer newBuffer(buffer["byteLength"].GetInt());
+			newBuffer.uri = getString(buffer, "uri");
+			newBuffer.name = getString(buffer, "name");
+
+			model.buffers.push_back(newBuffer);
+		}
+
 		return model;
 	}
 }
 
 int main()
 {
-	auto model = gltf::load("models/Box.gltf");
+	std::ifstream t("models/Box.gltf");
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+
+	auto model = gltf::load(buffer.str());
 
 	return 0;
 }
