@@ -240,18 +240,22 @@ namespace gltf
 		return model;
 	}
 
-	std::vector<std::byte> loadBuffer(const std::string &basePath,
-									  const Buffer &buffer)
+	auto loadBuffer(const std::string &basePath, const Buffer &buffer)
 	{
 		std::vector<std::byte> dataBuffer;
-		dataBuffer.reserve(buffer.byteLength);
+		dataBuffer.resize(buffer.byteLength);
 		
 		const std::string path = basePath + buffer.uri;
 
 		std::ifstream ifs(path, std::ios::binary);
 		if (ifs)
 		{
-			ifs.read(reinterpret_cast<char *>(dataBuffer.data()), buffer.byteLength);
+			ifs.seekg(0);
+			if(!ifs.read(reinterpret_cast<char *>(dataBuffer.data()), buffer.byteLength))
+			{
+				exit(1);
+			}
+			ifs.close();
 		}
 
 		return dataBuffer;
@@ -265,6 +269,11 @@ int main()
 	buffer << t.rdbuf();
 
 	auto model = gltf::load(buffer.str());
+
+	for (const auto &buffer : model.buffers)
+	{
+		gltf::loadBuffer("models/", buffer);
+	}
 
 	return 0;
 }
