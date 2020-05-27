@@ -239,6 +239,23 @@ namespace gltf
 
 		return model;
 	}
+
+	std::vector<std::byte> loadBuffer(const std::string &basePath,
+									  const Buffer &buffer)
+	{
+		std::vector<std::byte> dataBuffer;
+		dataBuffer.reserve(buffer.byteLength);
+		
+		const std::string path = basePath + buffer.uri;
+
+		std::ifstream ifs(path, std::ios::binary);
+		if (ifs)
+		{
+			ifs.read(reinterpret_cast<char *>(dataBuffer.data()), buffer.byteLength);
+		}
+
+		return dataBuffer;
+	}
 }
 
 int main()
