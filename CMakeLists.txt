@@ -10,6 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 add_executable(gltf
+  src/gltf.cpp
+  src/modelaccessors.cpp
   src/main.cpp)
 
 target_include_directories(gltf PRIVATE
