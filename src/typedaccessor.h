@@ -16,16 +16,23 @@ namespace gltf
 		{
 			size_t position;
 			const std::vector<std::byte> &data;
+			const Accessor &accessor;
 			const BufferView &bufferView;
 
-			size_t offset()
+			inline size_t offset()
 			{
-				return position * bufferView.byteStride.value();
+				int stride = bufferView.byteStride.has_value()
+					? bufferView.byteStride.value()
+					: sizeof(ComponentType);
+
+				size_t offset = position * stride + (accessor.byteOffset + bufferView.byteOffset);
+				return offset;
 			}
 
 		public:
 			TypedIterator(size_t position, const std::vector<std::byte> &data,
-						  const BufferView &bufferView) : data(data), bufferView(bufferView)
+						  const Accessor &accessor, const BufferView &bufferView)
+				: data(data), accessor(accessor), bufferView(bufferView)
 			{
 				this->position = position;
 			}
@@ -45,10 +52,6 @@ namespace gltf
 			{
 				return (reinterpret_cast<const ComponentType *>(data.data() + offset()));
 			}
-
-			ComponentType operator[](size_t index) const
-			{
-			}
 		};
 
 	public:
@@ -61,13 +64,17 @@ namespace gltf
 
 		TypedIterator begin() const
 		{
-			return TypedIterator(0, data, bufferView);
+			return TypedIterator(0, data, accessor, bufferView);
 		}
 
 		TypedIterator end() const
 		{
-			unsigned int last = bufferView.byteLength.value() / bufferView.byteStride.value();
-			return TypedIterator(last, data, bufferView);
+			int stride = bufferView.byteStride.has_value()
+				? bufferView.byteStride.value()
+				: sizeof(ComponentType);
+
+			unsigned int last = accessor.count;
+			return TypedIterator(last, data, accessor, bufferView);
 		}
 
 	};

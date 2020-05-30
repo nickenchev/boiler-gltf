@@ -34,7 +34,7 @@ namespace gltf
 	struct BufferView
 	{
 		int buffer;
-		std::optional<byte_size> byteOffset;
+		byte_size byteOffset;
 		std::optional<byte_size> byteLength;
 		std::optional<byte_size> byteStride;
 		std::optional<int> target;

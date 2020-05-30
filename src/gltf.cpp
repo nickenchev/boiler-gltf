@@ -148,6 +148,7 @@ namespace gltf
 				newAccessor.byteOffset = byteOffset.value();
 			}
 			newAccessor.componentType = accessor["componentType"].GetInt();
+			newAccessor.count = accessor["count"].GetInt();
 
 			model.accessors.push_back(newAccessor);
 		}

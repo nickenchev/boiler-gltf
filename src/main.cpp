@@ -23,10 +23,16 @@ int main()
 	{
 		for (auto &primitive : mesh.primitives)
 		{
-			auto typedAccess = accessors.getTypedAccessor<float>(model.accessors[primitive.attributes["POSITION"]]);
-			for (auto values : typedAccess)
+			auto positionAccess = accessors.getTypedAccessor<float>(model.accessors[primitive.attributes["POSITION"]]);
+			for (auto values : positionAccess)
 			{
 				std::cout << values[0] << ", " << values[1] << ", " << values[2] << std::endl;
+			}
+
+			auto indexAccess = accessors.getTypedAccessor<unsigned short>(model.accessors[primitive.indices.value()]);
+			for (auto index : indexAccess)
+			{
+				std::cout << index[0] << std::endl;
 			}
 		}
 	}
