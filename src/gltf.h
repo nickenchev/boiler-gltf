@@ -11,8 +11,13 @@
 
 using namespace rapidjson;
 
-namespace gltf
+namespace boiler { namespace gltf
 {
+	namespace attributes
+	{
+		static inline const std::string POSITION = "POSITION";
+	}
+
 	using byte_size = unsigned int;
 
 	struct Accessor
@@ -83,6 +88,10 @@ namespace gltf
 		std::optional<int> mode;
 	};
 
+	struct Material
+	{
+	};
+
 	struct Mesh
 	{
 		std::vector<Primitive> primitives;
@@ -104,6 +113,7 @@ namespace gltf
 	std::optional<int> getInt(const Value &value, const std::string &key);
 	Model load(const std::string &&jsonData);
 	std::vector<std::byte> loadBuffer(const std::string &basePath, const Buffer &buffer);
+};
 };
 
 #endif /* GLTF_H */

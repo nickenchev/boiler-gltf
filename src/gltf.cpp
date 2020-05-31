@@ -1,6 +1,6 @@
 #include "gltf.h"
 
-namespace gltf
+namespace boiler { namespace gltf
 {
 	std::string getString(const Value &value, const std::string &key)
 	{
@@ -210,4 +210,5 @@ namespace gltf
 
 		return dataBuffer;
 	}
+};
 };

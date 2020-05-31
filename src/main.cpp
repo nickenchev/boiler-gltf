@@ -6,6 +6,7 @@
 
 int main()
 {
+	// read the 
 	std::ifstream t("models/Box.gltf");
 	std::stringstream buffer;
 	buffer << t.rdbuf();
@@ -18,21 +19,28 @@ int main()
 		buffers.push_back(loadBuffer("models/", buffer));
 	}
 
-	gltf::ModelAccessors accessors(model, std::move(buffers));
+	gltf::ModelAccessors modelAccess(model, std::move(buffers));
 	for (auto &mesh : model.meshes)
 	{
 		for (auto &primitive : mesh.primitives)
 		{
-			auto positionAccess = accessors.getTypedAccessor<float>(model.accessors[primitive.attributes["POSITION"]]);
+			using namespace gltf::attributes;
+
+			// get the primitive's position data
+			auto positionAccess = modelAccess.getTypedAccessor<float>(primitive, POSITION);
 			for (auto values : positionAccess)
 			{
 				std::cout << values[0] << ", " << values[1] << ", " << values[2] << std::endl;
 			}
 
-			auto indexAccess = accessors.getTypedAccessor<unsigned short>(model.accessors[primitive.indices.value()]);
-			for (auto index : indexAccess)
+			// check if we have indices for this primitive
+			if (primitive.indices.has_value())
 			{
-				std::cout << index[0] << std::endl;
+				auto indexAccess = modelAccess.getTypedAccessor<unsigned short>(primitive, primitive.indices.value());
+				for (auto index : indexAccess)
+				{
+					std::cout << index[0] << std::endl;
+				}
 			}
 		}
 	}
