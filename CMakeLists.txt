@@ -11,8 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 add_executable(gltf
   src/gltf.cpp
-  src/modelaccessors.cpp
-  src/main.cpp)
+  src/modelaccessors.cpp)
 
 target_include_directories(gltf PRIVATE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
