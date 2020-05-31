@@ -3,7 +3,7 @@
 
 #include "typedaccessor.h"
 
-namespace gltf
+namespace boiler { namespace gltf
 {
 	struct Model;
 
@@ -16,6 +16,19 @@ namespace gltf
 		ModelAccessors(const gltf::Model &model,
 					   std::vector<std::vector<std::byte>> &&buffers);
 
+
+		template<typename ComponentType>
+		TypedAccessor<ComponentType> getTypedAccessor(const Primitive &primitive, const std::string &attribute)
+		{
+			return getTypedAccessor<ComponentType>(model.accessors.at(primitive.attributes.find(attribute)->second));
+		}
+
+		template<typename ComponentType>
+		TypedAccessor<ComponentType> getTypedAccessor(const Primitive &primitive, unsigned int accessorIndex)
+		{
+			return getTypedAccessor<ComponentType>(model.accessors.at(accessorIndex));
+		}
+		
 		template<typename ComponentType>
 		TypedAccessor<ComponentType> getTypedAccessor(const Accessor &accessor)
 		{
@@ -26,6 +39,7 @@ namespace gltf
 			return TypedAccessor<ComponentType>(accessor, bufferView, data);
 		}
 	};
-};
+}
+}
 
 #endif /* MODELACCESSORS_H */
