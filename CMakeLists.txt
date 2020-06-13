@@ -20,11 +20,9 @@ set(HEADER_FILES
 
 add_library(boiler-gltf STATIC ${SOURCE_FILES})
 
-target_include_directories(boiler-gltf PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external>
+target_include_directories(boiler-gltf
+  PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  PRIVATE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external>
 )
-
-install(TARGETS boiler-gltf
-        LIBRARY DESTINATION lib
-        PUBLIC_HEADER DESTINATION include/boiler-gltf)

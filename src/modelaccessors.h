@@ -3,7 +3,7 @@
 
 #include "typedaccessor.h"
 
-namespace boiler { namespace gltf
+namespace Boiler { namespace gltf
 {
 	struct Model;
 

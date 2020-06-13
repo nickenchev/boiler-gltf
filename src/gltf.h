@@ -11,7 +11,7 @@
 
 using namespace rapidjson;
 
-namespace boiler { namespace gltf
+namespace Boiler { namespace gltf
 {
 	namespace attributes
 	{

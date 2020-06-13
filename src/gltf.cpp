@@ -1,6 +1,6 @@
 #include "gltf.h"
 
-namespace boiler { namespace gltf
+namespace Boiler { namespace gltf
 {
 	std::string getString(const Value &value, const std::string &key)
 	{

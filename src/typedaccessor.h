@@ -3,7 +3,7 @@
 
 #include "gltf.h"
 
-namespace boiler { namespace gltf
+namespace Boiler { namespace gltf
 {
 	template<typename ComponentType>
 	class TypedAccessor
