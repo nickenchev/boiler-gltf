@@ -19,6 +19,7 @@ namespace Boiler { namespace gltf
 		if (value.HasMember(key.c_str()))
 		{
 			return std::optional<int>(value[key.c_str()].GetInt());
+
 		}
 		else
 		{
@@ -26,14 +27,14 @@ namespace Boiler { namespace gltf
 		}
 	}
 
-	Model load(const std::string &&jsonData)
+	Model load(const std::string &jsonData)
 	{
 		using namespace gltf;
+		Model model;
+
 		Document document;
 		document.Parse(jsonData.c_str());
 
-		using namespace gltf;
-		Model model;
 
 		// asset info
 		assert(document.HasMember("asset") && document["asset"].IsObject());

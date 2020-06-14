@@ -3,7 +3,7 @@
 
 using namespace Boiler::gltf;
 
-ModelAccessors::ModelAccessors(const Model &model,
-							   std::vector<std::vector<std::byte>> &&buffers) : model(model), buffers(buffers)
+ModelAccessors::ModelAccessors(const Model &model, std::vector<std::vector<std::byte>> &&buffers)
+	: model(model), buffers(buffers)
 {
 }
