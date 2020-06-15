@@ -5,7 +5,7 @@
 
 namespace Boiler { namespace gltf
 {
-	template<typename ComponentType>
+	template<typename ComponentType, unsigned short NumComponents>
 	class TypedAccessor
 	{
 		const Accessor &accessor;
@@ -21,9 +21,9 @@ namespace Boiler { namespace gltf
 
 			inline size_t offset()
 			{
-				int stride = bufferView.byteStride.has_value()
+				unsigned int stride = bufferView.byteStride.has_value()
 					? bufferView.byteStride.value()
-					: sizeof(ComponentType);
+					: sizeof(ComponentType) * NumComponents;
 
 				size_t offset = position * stride + (accessor.byteOffset + bufferView.byteOffset);
 				return offset;
@@ -55,7 +55,7 @@ namespace Boiler { namespace gltf
 		};
 
 	public:
-		TypedAccessor<ComponentType>(const Accessor &accessor,
+		TypedAccessor<ComponentType, NumComponents>(const Accessor &accessor,
 									 const BufferView &bufferView,
 									 const std::vector<std::byte> &data)
 			: accessor(accessor), bufferView(bufferView), data(data)
@@ -71,7 +71,7 @@ namespace Boiler { namespace gltf
 		{
 			int stride = bufferView.byteStride.has_value()
 				? bufferView.byteStride.value()
-				: sizeof(ComponentType);
+				: sizeof(ComponentType) * NumComponents;
 
 			unsigned int last = accessor.count;
 			return TypedIterator(last, data, accessor, bufferView);
