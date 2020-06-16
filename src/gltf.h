@@ -16,6 +16,7 @@ namespace Boiler { namespace gltf
 	namespace attributes
 	{
 		static inline const std::string POSITION = "POSITION";
+		static inline const std::string NORMAL = "NORMAL";
 	}
 
 	using byte_size = unsigned int;
