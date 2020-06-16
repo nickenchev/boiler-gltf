@@ -110,6 +110,7 @@ namespace Boiler { namespace gltf
 		{
 			assert(mesh.IsObject());
 			Mesh newMesh;
+			newMesh.name = getString(mesh, "name");
 
 			assert(mesh.HasMember("primitives"));
 			const auto primitives = mesh["primitives"].GetArray();

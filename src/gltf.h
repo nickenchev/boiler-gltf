@@ -95,6 +95,7 @@ namespace Boiler { namespace gltf
 
 	struct Mesh
 	{
+		std::string name;
 		std::vector<Primitive> primitives;
 	};
 
