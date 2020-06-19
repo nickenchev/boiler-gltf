@@ -72,8 +72,12 @@ namespace Boiler { namespace gltf
 	struct Node
 	{
 		std::vector<int> children;
-		std::vector<float> matrix;
-		int mesh;
+		std::optional<std::array<float, 16>> matrix;
+		std::optional<int> mesh;
+		std::optional<std::array<float, 4>> rotation;
+		std::optional<std::array<float, 3>> scale;
+		std::optional<std::array<float, 3>> translation;
+		std::string name;
 	};
 
 	struct Scene

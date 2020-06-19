@@ -27,6 +27,25 @@ namespace Boiler { namespace gltf
 		}
 	}
 
+	template<int Size>
+	std::optional<std::array<float, Size>> getArray(const Value &value, const std::string &key)
+	{
+		std::optional<std::array<float, Size>> result;
+		if (value.HasMember(key.c_str()))
+		{
+			const auto &array = value[key.c_str()];
+			assert(array.IsArray());
+
+			std::array<float, Size> floatArray;
+			for (int i = 0; i < array.Size(); ++i)
+			{
+				floatArray[i] = array.GetArray()[i].GetFloat();
+			}
+			result = floatArray;
+		}
+		return result;
+	}
+
 	Model load(const std::string &jsonData)
 	{
 		using namespace gltf;
@@ -82,17 +101,11 @@ namespace Boiler { namespace gltf
 					}
 				}
 
-				if (node.HasMember("matrix"))
-				{
-					const auto &matrix = node["matrix"];
-					assert(matrix.IsArray());
-
-					newNode.matrix.reserve(matrix.Size());
-					for (const auto &value : matrix.GetArray())
-					{
-						newNode.matrix.push_back(value.GetFloat());
-					}
-				}
+				newNode.name = getString(node, "name");
+				newNode.matrix = getArray<16>(node, "matrix");
+				newNode.rotation = getArray<4>(node, "rotation");
+				newNode.scale = getArray<3>(node, "scale");
+				newNode.translation = getArray<3>(node, "translation");
 
 				if (node.HasMember("mesh"))
 				{

@@ -16,19 +16,19 @@ namespace Boiler { namespace gltf
 		ModelAccessors(const gltf::Model &model, std::vector<std::vector<std::byte>> &&buffers);
 
 		template<typename ComponentType, unsigned short NumComponents>
-		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, const std::string &attribute)
+		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, const std::string &attribute) const
 		{
 			return getTypedAccessor<ComponentType, NumComponents>(model.accessors.at(primitive.attributes.find(attribute)->second));
 		}
 
 		template<typename ComponentType, unsigned short NumComponents>
-		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, unsigned int accessorIndex)
+		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, unsigned int accessorIndex) const
 		{
 			return getTypedAccessor<ComponentType, NumComponents>(model.accessors.at(accessorIndex));
 		}
 		
 		template<typename ComponentType, unsigned short NumComponents>
-		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Accessor &accessor)
+		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Accessor &accessor) const
 		{
 			assert(accessor.bufferView.has_value());
 			const BufferView &bufferView = model.bufferViews[accessor.bufferView.value()];
