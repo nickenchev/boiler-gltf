@@ -36,6 +36,8 @@ namespace Boiler { namespace gltf
 
 			return TypedAccessor<ComponentType, NumComponents>(accessor, bufferView, data);
 		}
+
+		const Model &getModel() const { return model; }
 	};
 }
 }
