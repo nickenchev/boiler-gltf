@@ -13,15 +13,23 @@ using namespace rapidjson;
 
 namespace Boiler { namespace gltf
 {
+	using floatArray3 = std::array<float, 3>;
+	using floatArray4 = std::array<float, 4>;
+	using floatArray16 = std::array<float, 16>;
+
 	namespace attributes
 	{
 		static inline const std::string POSITION = "POSITION";
 		static inline const std::string NORMAL = "NORMAL";
 	}
 
+	struct GLTFBase
+	{
+	};
+
 	using byte_size = unsigned int;
 
-	struct Accessor
+	struct Accessor : GLTFBase
 	{
 		std::optional<int> bufferView;
 		int byteOffset;
@@ -37,7 +45,7 @@ namespace Boiler { namespace gltf
 		}
 	};
 
-	struct BufferView
+	struct BufferView : GLTFBase
 	{
 		int buffer;
 		byte_size byteOffset;
@@ -52,7 +60,7 @@ namespace Boiler { namespace gltf
 		}
 	};
 
-	struct Buffer
+	struct Buffer : GLTFBase
 	{
 		std::string uri;
 		byte_size byteLength;
@@ -64,28 +72,28 @@ namespace Boiler { namespace gltf
 		}
 	};
 
-	struct Asset
+	struct Asset : GLTFBase
 	{
 		std::string version, generator, copyright;
 	};
 
-	struct Node
+	struct Node : GLTFBase
 	{
 		std::vector<int> children;
-		std::optional<std::array<float, 16>> matrix;
+		std::optional<floatArray16> matrix;
 		std::optional<int> mesh;
-		std::optional<std::array<float, 4>> rotation;
-		std::optional<std::array<float, 3>> scale;
-		std::optional<std::array<float, 3>> translation;
+		std::optional<floatArray4> rotation;
+		std::optional<floatArray3> scale;
+		std::optional<floatArray3> translation;
 		std::string name;
 	};
 
-	struct Scene
+	struct Scene : GLTFBase
 	{
 		std::vector<int> nodes;
 	};
 
-	struct Primitive
+	struct Primitive : GLTFBase
 	{
 		std::unordered_map<std::string, int> attributes;
 		std::optional<int> indices;
@@ -93,17 +101,70 @@ namespace Boiler { namespace gltf
 		std::optional<int> mode;
 	};
 
-	struct Material
-	{
-	};
-
-	struct Mesh
+	struct Mesh : GLTFBase
 	{
 		std::string name;
 		std::vector<Primitive> primitives;
 	};
 
-	struct Model
+	struct Image : GLTFBase
+	{
+	};
+
+	struct Texture : GLTFBase
+	{
+	};
+
+	struct MaterialTexture : GLTFBase
+	{
+		std::optional<unsigned int> index;
+		std::optional<unsigned int> texCoord;
+		float scale;
+
+		MaterialTexture()
+		{
+			scale = 1.0f;
+		}
+	};
+
+	struct PBRMetallicRoughness : GLTFBase
+	{
+		std::optional<floatArray4> baseColorFactor;
+		std::optional<MaterialTexture> baseColorTexture;
+		float metallicFactor;
+		float roughnessFactor;
+		std::optional<MaterialTexture> metallicRoughnessTexture;
+
+		PBRMetallicRoughness()
+		{
+			baseColorFactor = floatArray4{1, 1, 1, 1};
+			metallicFactor = 1;
+			roughnessFactor = 1;
+		}
+	};
+
+	struct Material : GLTFBase
+	{
+		std::string name;
+		std::optional<PBRMetallicRoughness> pbrMetallicRoughness;
+		std::optional<MaterialTexture> normalTexture;
+		std::optional<MaterialTexture> occlusionTexture;
+		std::optional<MaterialTexture> emissiveTexture;
+		std::optional<floatArray3> emissiveFactor;
+		std::string alphaMode;
+		float alphaCutoff;
+		bool doubleSided;
+
+		Material()
+		{
+			emissiveFactor = {0, 0, 0};
+			alphaMode = "OPAQUE";
+			alphaCutoff = 0.5f;
+			doubleSided = false;
+		}
+	};
+
+	struct Model : GLTFBase
 	{
 		Asset asset;
 		int scene;

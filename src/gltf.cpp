@@ -26,6 +26,19 @@ namespace Boiler { namespace gltf
 			return std::optional<int>();
 		}
 	}
+	
+	std::optional<float> getFloat(const Value &value, const std::string &key)
+	{
+		if (value.HasMember(key.c_str()))
+		{
+			return std::optional<int>(value[key.c_str()].GetFloat());
+
+		}
+		else
+		{
+			return std::optional<float>();
+		}
+	}
 
 	template<int Size>
 	std::optional<std::array<float, Size>> getArray(const Value &value, const std::string &key)
@@ -200,6 +213,35 @@ namespace Boiler { namespace gltf
 			newBufferView.name = getString(bufferView, "name");
 
 			model.bufferViews.push_back(newBufferView);
+		}
+
+		// materials
+		if (document.HasMember("materials") && document["materials"].IsArray())
+		{
+			for (const auto &material : document["materials"].GetArray())
+			{
+				Material newMaterial;
+				newMaterial.name = getString(material, "name");
+
+				if (material.HasMember("pbrMetallicRoughness"))
+				{
+					auto getTexture = [](const Value &value, const std::string &key)
+					{
+						std::optional<MaterialTexture> matTexture;
+						if (value.HasMember(key.c_str()))
+						{
+							const auto &material = value[key.c_str()];
+							MaterialTexture newMatTexture;
+							newMatTexture.index = getInt(material, "index");
+							newMatTexture.texCoord = getInt(material, "texCoord");
+							const auto scale = getFloat(material, "scale");
+							if (scale.has_value()) newMatTexture.scale = scale.value();
+						}
+					};
+					PBRMetallicRoughness pbrMetallicRoughness;
+					pbrMetallicRoughness.baseColorFactor = getArray<4>(material["pbrMetallicRoughness"], "baseColorFactor");
+				}
+			}
 		}
 
 		return model;
