@@ -176,7 +176,7 @@ namespace Boiler { namespace gltf
 		std::vector<Accessor> accessors;
 	};
 
-	std::string getString(const Value &value, const std::string &key);
+	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue = "");
 	std::optional<int> getInt(const Value &value, const std::string &key);
 	Model load(const std::string &jsonData);
 	std::vector<std::byte> loadBuffer(const std::string &basePath, const Buffer &buffer);

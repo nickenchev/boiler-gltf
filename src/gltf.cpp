@@ -2,7 +2,7 @@
 
 namespace Boiler { namespace gltf
 {
-	std::string getString(const Value &value, const std::string &key)
+	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue) 
 	{
 		if (value.HasMember(key.c_str()))
 		{
@@ -10,7 +10,7 @@ namespace Boiler { namespace gltf
 		}
 		else
 		{
-			return "";
+			return defaultValue;
 		}
 	}
 
@@ -41,7 +41,7 @@ namespace Boiler { namespace gltf
 	}
 
 	template<int Size>
-	std::optional<std::array<float, Size>> getArray(const Value &value, const std::string &key)
+	auto getArray(const Value &value, const std::string &key)
 	{
 		std::optional<std::array<float, Size>> result;
 		if (value.HasMember(key.c_str()))
@@ -58,6 +58,24 @@ namespace Boiler { namespace gltf
 		}
 		return result;
 	}
+
+
+	auto getTexture(const Value &value, const std::string &key)
+	{
+		std::optional<MaterialTexture> matTexture;
+		if (value.HasMember(key.c_str()))
+		{
+			const auto &material = value[key.c_str()];
+			MaterialTexture newMatTexture;
+			newMatTexture.index = getInt(material, "index");
+			newMatTexture.texCoord = getInt(material, "texCoord");
+			const auto scale = getFloat(material, "scale");
+			if (scale.has_value()) newMatTexture.scale = scale.value();
+
+			matTexture = newMatTexture;
+		}
+		return matTexture;
+	};
 
 	Model load(const std::string &jsonData)
 	{
@@ -225,22 +243,25 @@ namespace Boiler { namespace gltf
 
 				if (material.HasMember("pbrMetallicRoughness"))
 				{
-					auto getTexture = [](const Value &value, const std::string &key)
-					{
-						std::optional<MaterialTexture> matTexture;
-						if (value.HasMember(key.c_str()))
-						{
-							const auto &material = value[key.c_str()];
-							MaterialTexture newMatTexture;
-							newMatTexture.index = getInt(material, "index");
-							newMatTexture.texCoord = getInt(material, "texCoord");
-							const auto scale = getFloat(material, "scale");
-							if (scale.has_value()) newMatTexture.scale = scale.value();
-						}
-					};
-					PBRMetallicRoughness pbrMetallicRoughness;
-					pbrMetallicRoughness.baseColorFactor = getArray<4>(material["pbrMetallicRoughness"], "baseColorFactor");
+					const auto &pbrInfo = material["pbrMetallicRoughness"];
+
+					newMaterial.pbrMetallicRoughness = PBRMetallicRoughness();
+					PBRMetallicRoughness &pbrMetallicRoughness = newMaterial.pbrMetallicRoughness.value();
+
+					// load PBR material info
+					pbrMetallicRoughness.baseColorFactor = getArray<4>(pbrInfo, "baseColorFactor");
+					pbrMetallicRoughness.baseColorTexture = getTexture(pbrInfo, "baseColorTexture");
+					const auto metallicFactor = getFloat(pbrInfo, "metallicFactor");
+					if (metallicFactor.has_value()) pbrMetallicRoughness.metallicFactor = metallicFactor.value();
+					const auto roughnessFactor = getFloat(pbrInfo, "roughnessFactor");
+					if (roughnessFactor.has_value()) pbrMetallicRoughness.roughnessFactor = roughnessFactor.value();
+					pbrMetallicRoughness.metallicRoughnessTexture = getTexture(pbrInfo, "metallicRoughnessTexture");
 				}
+				newMaterial.normalTexture = getTexture(material, "normalTexture");
+				newMaterial.occlusionTexture = getTexture(material, "occlusionTexture");
+				newMaterial.emissiveTexture = getTexture(material, "emissiveTexture");
+				newMaterial.emissiveFactor = getArray<3>(material, "emissiveFactor");
+				newMaterial.alphaMode = getString(material, "alphaMode", "OPAQUE");
 			}
 		}
 
