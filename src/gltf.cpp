@@ -31,12 +31,21 @@ namespace Boiler { namespace gltf
 	{
 		if (value.HasMember(key.c_str()))
 		{
-			return std::optional<int>(value[key.c_str()].GetFloat());
+			return std::optional<float>(value[key.c_str()].GetFloat());
 
 		}
 		else
 		{
 			return std::optional<float>();
+		}
+	}
+
+	void getBool(const Value &value, const std::string &key, bool &result)
+	{
+		if (value.HasMember(key.c_str()))
+		{
+			result = value[key.c_str()].GetBool();
+
 		}
 	}
 
@@ -262,6 +271,9 @@ namespace Boiler { namespace gltf
 				newMaterial.emissiveTexture = getTexture(material, "emissiveTexture");
 				newMaterial.emissiveFactor = getArray<3>(material, "emissiveFactor");
 				newMaterial.alphaMode = getString(material, "alphaMode", "OPAQUE");
+				const auto alphaCutoff = getFloat(material, "alphaCutoff");
+				if (alphaCutoff.has_value()) newMaterial.alphaCutoff = alphaCutoff.value();
+				getBool(material, "doubleSided", newMaterial.doubleSided);
 			}
 		}
 
