@@ -245,7 +245,10 @@ namespace Boiler { namespace gltf
 		// materials
 		if (document.HasMember("materials") && document["materials"].IsArray())
 		{
-			for (const auto &material : document["materials"].GetArray())
+			const auto &materials = document["materials"].GetArray();
+			model.materials.reserve(materials.Size());
+
+			for (const auto &material : materials)
 			{
 				Material newMaterial;
 				newMaterial.name = getString(material, "name");
@@ -274,6 +277,8 @@ namespace Boiler { namespace gltf
 				const auto alphaCutoff = getFloat(material, "alphaCutoff");
 				if (alphaCutoff.has_value()) newMaterial.alphaCutoff = alphaCutoff.value();
 				getBool(material, "doubleSided", newMaterial.doubleSided);
+
+				model.materials.push_back(newMaterial);
 			}
 		}
 

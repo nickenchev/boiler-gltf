@@ -174,6 +174,7 @@ namespace Boiler { namespace gltf
 		std::vector<Buffer> buffers;
 		std::vector<BufferView> bufferViews;
 		std::vector<Accessor> accessors;
+		std::vector<Material> materials;
 	};
 
 	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue = "");
