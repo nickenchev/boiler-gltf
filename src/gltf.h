@@ -21,6 +21,7 @@ namespace Boiler { namespace gltf
 	{
 		static inline const std::string POSITION = "POSITION";
 		static inline const std::string NORMAL = "NORMAL";
+		static inline const std::string TEXCOORD_0 = "TEXCOORD_0";
 	}
 
 	struct GLTFBase
@@ -109,10 +110,17 @@ namespace Boiler { namespace gltf
 
 	struct Image : GLTFBase
 	{
+		std::string uri;
+		std::string mimeType;
+		std::optional<int> bufferView;
+		std::string name;
 	};
 
 	struct Texture : GLTFBase
 	{
+		std::optional<int> sampler;
+		std::optional<int> source;
+		std::string name;
 	};
 
 	struct MaterialTexture : GLTFBase
@@ -175,6 +183,8 @@ namespace Boiler { namespace gltf
 		std::vector<BufferView> bufferViews;
 		std::vector<Accessor> accessors;
 		std::vector<Material> materials;
+		std::vector<Image> images;
+		std::vector<Texture> textures;
 	};
 
 	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue = "");

@@ -282,6 +282,41 @@ namespace Boiler { namespace gltf
 			}
 		}
 
+		// images
+		if (document.HasMember("images"))
+		{
+			const auto &images = document["images"].GetArray();
+			model.images.reserve(images.Size());
+
+			for (const auto &image : images)
+			{
+				Image newImage;
+				newImage.uri = getString(image, "uri");
+				newImage.mimeType = getString(image, "mimeType");
+				newImage.bufferView = getInt(image, "bufferView");
+				newImage.name = getString(image, "name");
+
+				model.images.push_back(newImage);
+			}
+		}
+
+		// textures
+		if (document.HasMember("textures"))
+		{
+			const auto &textures = document["textures"].GetArray();
+			model.textures.reserve(textures.Size());
+
+			for (const auto &texture : textures)
+			{
+				Texture newTexture;
+				newTexture.name = getString(texture, "name");
+				newTexture.sampler = getInt(texture, "sampler");
+				newTexture.source = getInt(texture, "source");
+
+				model.textures.push_back(newTexture);
+			}
+		}
+
 		return model;
 	}
 
