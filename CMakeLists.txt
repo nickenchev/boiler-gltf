@@ -15,6 +15,5 @@ add_library(boiler-gltf ${SOURCE_FILES})
 target_include_directories(boiler-gltf
   PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-  PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external>
 )
