@@ -59,7 +59,7 @@ namespace Boiler { namespace gltf
 			assert(array.IsArray());
 
 			std::array<float, Size> floatArray;
-			for (int i = 0; i < array.Size(); ++i)
+			for (unsigned int i = 0; i < array.Size(); ++i)
 			{
 				floatArray[i] = array.GetArray()[i].GetFloat();
 			}

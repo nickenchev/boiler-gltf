@@ -1,6 +1,7 @@
 #ifndef GLTF_H
 #define GLTF_H
 
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <string>
