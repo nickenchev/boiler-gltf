@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "gltf.h"
 
 namespace Boiler { namespace gltf
@@ -325,9 +326,10 @@ namespace Boiler { namespace gltf
 		std::vector<std::byte> dataBuffer;
 		dataBuffer.resize(buffer.byteLength);
 
-		const std::string path = basePath + buffer.uri;
+		std::filesystem::path bufferPath(basePath);
+		bufferPath.append(buffer.uri);
 
-		std::ifstream ifs(path, std::ios::binary);
+		std::ifstream ifs(bufferPath, std::ios::binary);
 		if (ifs)
 		{
 			ifs.seekg(0);
