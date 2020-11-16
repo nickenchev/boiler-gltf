@@ -22,7 +22,7 @@ namespace Boiler { namespace gltf
 		}
 
 		template<typename ComponentType, unsigned short NumComponents>
-		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, unsigned int accessorIndex) const
+		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &, unsigned int accessorIndex) const
 		{
 			return getTypedAccessor<ComponentType, NumComponents>(model.accessors.at(accessorIndex));
 		}

@@ -69,8 +69,7 @@ namespace Boiler { namespace gltf
 
 		TypedIterator end() const
 		{
-			int stride = bufferView.byteStride.has_value()
-				? bufferView.byteStride.value()
+			bufferView.byteStride.has_value() ? bufferView.byteStride.value()
 				: sizeof(ComponentType) * NumComponents;
 
 			unsigned int last = accessor.count;

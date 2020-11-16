@@ -51,7 +51,7 @@ namespace Boiler { namespace gltf
 	}
 
 	template<int Size>
-	auto getArray(const Value &value, const std::string &key)
+	constexpr auto getArray(const Value &value, const std::string &key)
 	{
 		std::optional<std::array<float, Size>> result;
 		if (value.HasMember(key.c_str()))
@@ -144,9 +144,9 @@ namespace Boiler { namespace gltf
 
 				newNode.name = getString(node, "name");
 				newNode.matrix = getArray<16>(node, "matrix");
+				newNode.translation = getArray<3>(node, "translation");
 				newNode.rotation = getArray<4>(node, "rotation");
 				newNode.scale = getArray<3>(node, "scale");
-				newNode.translation = getArray<3>(node, "translation");
 
 				if (node.HasMember("mesh"))
 				{
