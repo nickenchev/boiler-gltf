@@ -3,6 +3,11 @@
 
 namespace Boiler { namespace gltf
 {
+	namespace keys
+	{
+		const static std::string NAME("name");
+	};
+
 	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue) 
 	{
 		if (value.HasMember(key.c_str()))
@@ -142,7 +147,7 @@ namespace Boiler { namespace gltf
 					}
 				}
 
-				newNode.name = getString(node, "name");
+				newNode.name = getString(node, keys::NAME);
 				newNode.matrix = getArray<16>(node, "matrix");
 				newNode.translation = getArray<3>(node, "translation");
 				newNode.rotation = getArray<4>(node, "rotation");
@@ -164,7 +169,7 @@ namespace Boiler { namespace gltf
 		{
 			assert(mesh.IsObject());
 			Mesh newMesh;
-			newMesh.name = getString(mesh, "name");
+			newMesh.name = getString(mesh, keys::NAME);
 
 			assert(mesh.HasMember("primitives"));
 			const auto primitives = mesh["primitives"].GetArray();
@@ -203,8 +208,26 @@ namespace Boiler { namespace gltf
 			{
 				newAccessor.byteOffset = byteOffset.value();
 			}
-			newAccessor.componentType = accessor["componentType"].GetInt();
+			newAccessor.componentType = static_cast<ComponentType>(accessor["componentType"].GetInt());
 			newAccessor.count = accessor["count"].GetInt();
+			newAccessor.name = getString(accessor, keys::NAME);
+
+			if (accessor.HasMember("min"))
+			{
+				const auto &minValues = accessor["min"].GetArray();
+				for (const auto &value : minValues)
+				{
+					newAccessor.min.push_back(AccessorValue(value.GetFloat()));
+				}
+			}
+			if (accessor.HasMember("max"))
+			{
+				const auto &maxValues = accessor["max"].GetArray();
+				for (const auto &value : maxValues)
+				{
+					newAccessor.max.push_back(AccessorValue(value.GetFloat()));
+				}
+			}
 
 			model.accessors.push_back(newAccessor);
 		}
@@ -217,7 +240,7 @@ namespace Boiler { namespace gltf
 		{
 			Buffer newBuffer(buffer["byteLength"].GetInt());
 			newBuffer.uri = getString(buffer, "uri");
-			newBuffer.name = getString(buffer, "name");
+			newBuffer.name = getString(buffer, keys::NAME);
 
 			model.buffers.push_back(newBuffer);
 		}
@@ -238,7 +261,7 @@ namespace Boiler { namespace gltf
 			newBufferView.byteLength = bufferView["byteLength"].GetInt();
 			newBufferView.byteStride = getInt(bufferView, "byteStride");
 			newBufferView.target = getInt(bufferView, "target");
-			newBufferView.name = getString(bufferView, "name");
+			newBufferView.name = getString(bufferView, keys::NAME);
 
 			model.bufferViews.push_back(newBufferView);
 		}
@@ -252,7 +275,7 @@ namespace Boiler { namespace gltf
 			for (const auto &material : materials)
 			{
 				Material newMaterial;
-				newMaterial.name = getString(material, "name");
+				newMaterial.name = getString(material, keys::NAME);
 
 				if (material.HasMember("pbrMetallicRoughness"))
 				{
@@ -295,7 +318,7 @@ namespace Boiler { namespace gltf
 				newImage.uri = getString(image, "uri");
 				newImage.mimeType = getString(image, "mimeType");
 				newImage.bufferView = getInt(image, "bufferView");
-				newImage.name = getString(image, "name");
+				newImage.name = getString(image, keys::NAME);
 
 				model.images.push_back(newImage);
 			}
@@ -310,11 +333,35 @@ namespace Boiler { namespace gltf
 			for (const auto &texture : textures)
 			{
 				Texture newTexture;
-				newTexture.name = getString(texture, "name");
+				newTexture.name = getString(texture, keys::NAME);
 				newTexture.sampler = getInt(texture, "sampler");
 				newTexture.source = getInt(texture, "source");
 
 				model.textures.push_back(newTexture);
+			}
+		}
+
+		// animations
+		if (document.HasMember("animations"))
+		{
+			const auto &animations = document["animations"].GetArray();
+			model.animations.reserve(animations.Size());
+			
+			for (const auto &animation : animations)
+			{
+				Animation newAnimation;
+				newAnimation.name = getString(animation, keys::NAME);
+
+				// channels
+				if (animation.HasMember("channels"))
+				{
+					const auto &channels = animation["channels"].GetArray();
+					newAnimation.channels.reserve(channels.Size());
+
+					for (const auto &channel : channels)
+					{
+					}
+				}
 			}
 		}
 

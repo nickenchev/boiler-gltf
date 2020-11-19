@@ -31,14 +31,41 @@ namespace Boiler { namespace gltf
 
 	using byte_size = unsigned int;
 
+	union AccessorValue
+	{
+		char asByte;
+		unsigned char asUnsignedByte;
+		short asShort;
+		unsigned short asUnsignedShort;
+		unsigned int asUnsignedInt;
+		float asFloat;
+
+		AccessorValue(float value)
+		{
+			this->asFloat = value;
+		}
+	};
+
+	enum class ComponentType
+	{
+		BYTE = 5120,
+		UNSIGNED_BYTE= 5121,
+		SHORT = 5122,
+		UNSIGNED_SHORT = 5123,
+		UNSIGNED_INT = 5125,
+		FLOAT = 5126,
+	};
+
 	struct Accessor : GLTFBase
 	{
-		std::optional<int> bufferView;
-		int byteOffset;
-		int componentType;
+		std::optional<byte_size> bufferView;
+		byte_size byteOffset;
+		ComponentType componentType;
 		bool normalized;
-		int count;
+		unsigned int count;
 		std::string type;
+		std::vector<AccessorValue> max, min;
+		std::string name;
 
 		Accessor()
 		{
@@ -173,6 +200,36 @@ namespace Boiler { namespace gltf
 		}
 	};
 
+	struct Target : GLTFBase
+	{
+		int node;
+		std::string target;
+	};
+
+	struct Channel : GLTFBase
+	{
+		int sampler;
+		Target target;
+	};
+
+	struct Sampler : GLTFBase
+	{
+		int input, output;
+		std::string interpolation;
+
+		Sampler()
+		{
+			interpolation = "LINEAR";
+		}
+	};
+
+	struct Animation : GLTFBase
+	{
+		std::string name;
+		std::vector<Channel> channels;
+		std::vector<Sampler> samplers;
+	};
+	
 	struct Model : GLTFBase
 	{
 		Asset asset;
@@ -186,6 +243,7 @@ namespace Boiler { namespace gltf
 		std::vector<Material> materials;
 		std::vector<Image> images;
 		std::vector<Texture> textures;
+		std::vector<Animation> animations;
 	};
 
 	std::string getString(const Value &value, const std::string &key, const std::string &defaultValue = "");
