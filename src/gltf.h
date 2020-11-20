@@ -202,24 +202,25 @@ namespace Boiler { namespace gltf
 
 	struct Target : GLTFBase
 	{
-		int node;
-		std::string target;
-	};
-
-	struct Channel : GLTFBase
-	{
-		int sampler;
-		Target target;
+		std::optional<unsigned int>node;
+		std::string path;
 	};
 
 	struct Sampler : GLTFBase
 	{
-		int input, output;
+		const Accessor &input, &output;
 		std::string interpolation;
 
-		Sampler()
+		Sampler(const Accessor &input, const Accessor &output) : input(input), output(output) { }
+	};
+
+	struct Channel : GLTFBase
+	{
+		const Sampler &sampler;
+		const Target target;
+
+		Channel(const Sampler &sampler, Target target) : sampler(sampler), target(target)
 		{
-			interpolation = "LINEAR";
 		}
 	};
 
