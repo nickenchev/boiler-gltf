@@ -1,6 +1,7 @@
 #ifndef MODELACCESSORS_H
 #define MODELACCESSORS_H
 
+#include "gltf.h"
 #include "typedaccessor.h"
 
 namespace Boiler { namespace gltf
@@ -22,7 +23,7 @@ namespace Boiler { namespace gltf
 		}
 
 		template<typename ComponentType, unsigned short NumComponents>
-		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &, unsigned int accessorIndex) const
+		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(unsigned int accessorIndex) const
 		{
 			return getTypedAccessor<ComponentType, NumComponents>(model.accessors.at(accessorIndex));
 		}
