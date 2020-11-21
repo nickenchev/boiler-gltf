@@ -62,6 +62,11 @@ namespace Boiler { namespace gltf
 		{
 		}
 
+		const ComponentType *operator[](int index) const
+		{
+			return *TypedIterator(index, data, accessor, bufferView);
+		}
+
 		TypedIterator begin() const
 		{
 			return TypedIterator(0, data, accessor, bufferView);
@@ -76,6 +81,7 @@ namespace Boiler { namespace gltf
 			return TypedIterator(last, data, accessor, bufferView);
 		}
 
+		size_t size() const { return accessor.count; }
 	};
 }}
 
