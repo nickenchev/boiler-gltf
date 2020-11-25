@@ -33,6 +33,12 @@ namespace Boiler { namespace gltf
 		{
 			assert(accessor.bufferView.has_value());
 			const BufferView &bufferView = model.bufferViews[accessor.bufferView.value()];
+
+			if (bufferView.byteStride.has_value())
+			{
+				assert(bufferView.byteStride.value() == sizeof(ComponentType) * NumComponents);
+			}
+
 			const std::vector<std::byte> &data = buffers[bufferView.buffer];
 
 			return TypedAccessor<ComponentType, NumComponents>(accessor, bufferView, data);
@@ -42,7 +48,7 @@ namespace Boiler { namespace gltf
 		{
 			const BufferView &bufferView = model.bufferViews[accessor.bufferView.value()];
 			const std::vector<std::byte> &data = buffers[bufferView.buffer];
-			return data.data();
+			return data.data() + (accessor.byteOffset + bufferView.byteOffset);
 		}
 
 		const Model &getModel() const { return model; }
