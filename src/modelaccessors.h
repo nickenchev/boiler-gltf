@@ -38,6 +38,13 @@ namespace Boiler { namespace gltf
 			return TypedAccessor<ComponentType, NumComponents>(accessor, bufferView, data);
 		}
 
+		const std::byte *getPointer(const Accessor &accessor) const
+		{
+			const BufferView &bufferView = model.bufferViews[accessor.bufferView.value()];
+			const std::vector<std::byte> &data = buffers[bufferView.buffer];
+			return data.data();
+		}
+
 		const Model &getModel() const { return model; }
 	};
 }

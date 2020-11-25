@@ -357,12 +357,22 @@ namespace Boiler { namespace gltf
 				{
 					const auto &samplers = animation["samplers"].GetArray();
 					newAnimation.samplers.reserve(samplers.Size());
+
 					for (const auto &sampler : samplers)
 					{
-						Sampler newSampler(model.accessors[sampler["input"].GetInt()],
-										   model.accessors[sampler["output"].GetInt()]);
-						newSampler.interpolation = getString(sampler, "interpolation", "LINEAR");
-						newAnimation.samplers.push_back(newSampler);
+						const std::string interpStr = getString(sampler, "interpolation", "LINEAR");
+						Interpolation interpolation = Interpolation::LINEAR;
+						if (interpStr == "STEP")
+						{
+							interpolation = Interpolation::STEP;
+						}
+						else if (interpStr == "CUBICSPLINE")
+						{
+							interpolation = Interpolation::CUBICSPLINE;
+						}
+
+						newAnimation.samplers.push_back(
+							Sampler(sampler["input"].GetInt(), sampler["output"].GetInt(), interpolation));
 					}
 				}
 
@@ -382,6 +392,9 @@ namespace Boiler { namespace gltf
 							newTarget.node = target["node"].GetInt();
 						}
 						newTarget.path = target["path"].GetString();
+
+						newAnimation.channels.push_back(
+							Channel(channel["sampler"].GetInt(), newTarget));
 					}
 				}
 				model.animations.push_back(newAnimation);
