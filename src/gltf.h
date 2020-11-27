@@ -19,20 +19,6 @@ using floatArray3 = std::array<float, 3>;
 using floatArray4 = std::array<float, 4>;
 using floatArray16 = std::array<float, 16>;
 
-namespace ComponentTypes
-{
-
-template<typename Type, unsigned short ComponentCount>
-struct ComponentType
-{
-	static constexpr Type type;
-    static constexpr unsigned short componentCount = ComponentCount;
-};
-
-struct VEC3 : ComponentType<float, 3> {};
-
-}
-
 namespace attributes
 {
     static inline const std::string POSITION = "POSITION";
@@ -280,6 +266,7 @@ std::string getString(const Value &value, const std::string &key, const std::str
 std::optional<int> getInt(const Value &value, const std::string &key);
 Model load(const std::string &jsonData);
 std::vector<std::byte> loadBuffer(const std::string &basePath, const Buffer &buffer);
+
 };
 };
 
