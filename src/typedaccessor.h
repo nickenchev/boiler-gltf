@@ -8,7 +8,6 @@ namespace Boiler { namespace gltf
 	template<typename ComponentType, unsigned short NumComponents>
 	class TypedAccessor
 	{
-		const Accessor &accessor;
 		const BufferView &bufferView;
 		const std::vector<std::byte> &data;
 
@@ -55,9 +54,9 @@ namespace Boiler { namespace gltf
 		};
 
 	public:
-		TypedAccessor<ComponentType, NumComponents>(const Accessor &accessor,
-									 const BufferView &bufferView,
-									 const std::vector<std::byte> &data)
+		const Accessor &accessor;
+
+		TypedAccessor(const Accessor &accessor, const BufferView &bufferView, const std::vector<std::byte> &data)
 			: accessor(accessor), bufferView(bufferView), data(data)
 		{
 		}
