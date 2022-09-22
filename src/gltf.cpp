@@ -202,7 +202,38 @@ namespace Boiler { namespace gltf
 		{
 			Accessor newAccessor;
 			newAccessor.bufferView = getInt(accessor, "bufferView");
-			newAccessor.type = getString(accessor, "type");
+
+			newAccessor.type = AccessorType::VEC3;
+			std::string accessorType = getString(accessor, "type");
+			if (accessorType == "SCALAR")
+			{
+				newAccessor.type = AccessorType::SCALAR;
+			}
+			else if (accessorType == "VEC2")
+			{
+				newAccessor.type = AccessorType::VEC2;
+			}
+			else if (accessorType == "VEC3")
+			{
+				newAccessor.type = AccessorType::VEC3;
+			}
+			else if (accessorType == "VEC4")
+			{
+				newAccessor.type = AccessorType::VEC4;
+			}
+			else if (accessorType == "MAT2")
+			{
+				newAccessor.type = AccessorType::MAT2;
+			}
+			else if (accessorType == "MAT3")
+			{
+				newAccessor.type = AccessorType::MAT3;
+			}
+			else if (accessorType == "MAT4")
+			{
+				newAccessor.type = AccessorType::MAT4;
+			}
+
 			std::optional<int> byteOffset = getInt(accessor, "byteOffset");
 			if (byteOffset.has_value())
 			{
