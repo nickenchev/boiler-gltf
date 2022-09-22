@@ -57,6 +57,17 @@ enum class ComponentType
     FLOAT = 5126,
 };
 
+enum class AccessorType
+{
+	SCALAR,
+	VEC2,
+	VEC3,
+	VEC4,
+	MAT2,
+	MAT3,
+	MAT4
+};
+
 enum class Interpolation
 {
     LINEAR,
@@ -71,7 +82,7 @@ struct Accessor : GLTFBase
     ComponentType componentType;
     bool normalized;
     unsigned int count;
-    std::string type;
+    AccessorType type;
     std::vector<AccessorValue> max, min;
     std::string name;
 

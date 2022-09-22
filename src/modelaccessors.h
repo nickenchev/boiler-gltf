@@ -16,6 +16,10 @@ namespace Boiler { namespace gltf
 	public:
 		ModelAccessors(const gltf::Model &model, const std::vector<std::vector<std::byte>> &buffers);
 
+		const Accessor &getAccessor(const Primitive &primitive, const std::string &attribute) const {
+			return model.accessors.at(primitive.attributes.find(attribute)->second);
+		}
+
 		template<typename ComponentType, unsigned short NumComponents>
 		TypedAccessor<ComponentType, NumComponents> getTypedAccessor(const Primitive &primitive, const std::string &attribute) const
 		{
