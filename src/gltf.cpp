@@ -74,6 +74,17 @@ namespace Boiler { namespace gltf
 		return result;
 	}
 
+	template<int Size>
+	std::array<float, Size> getArray(const Value &value, const std::string &key, std::array<float, Size> defaultValue)
+	{
+		std::optional<std::array<float, Size>> result = getArray<Size>(value, key);
+		if (!result.has_value())
+		{
+			result = defaultValue;
+		}
+
+		return result.value();
+	}
 
 	auto getTexture(const Value &value, const std::string &key)
 	{
