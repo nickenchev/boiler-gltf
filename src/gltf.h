@@ -89,7 +89,10 @@ struct Accessor : GLTFBase
     Accessor()
     {
         byteOffset = 0;
+        componentType = ComponentType::BYTE;
         normalized = false;
+        count = 0;
+        type = AccessorType::SCALAR;
     }
 };
 
@@ -259,6 +262,8 @@ struct Animation : GLTFBase
 
 struct Model : GLTFBase
 {
+    const std::string gltfPath;
+
     Asset asset;
     int scene;
     std::vector<Scene> scenes;
@@ -271,11 +276,16 @@ struct Model : GLTFBase
     std::vector<Image> images;
     std::vector<Texture> textures;
     std::vector<Animation> animations;
+
+    Model(const std::string &gltfPath) : gltfPath(gltfPath)
+    {
+        scene = 0;
+    }
 };
 
 std::string getString(const Value &value, const std::string &key, const std::string &defaultValue = "");
 std::optional<int> getInt(const Value &value, const std::string &key);
-Model load(const std::string &jsonData);
+Model load(const std::string &gltfPath, const std::string &jsonData);
 std::vector<std::byte> loadBuffer(const std::string &basePath, const Buffer &buffer);
 
 };

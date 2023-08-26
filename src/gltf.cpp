@@ -103,10 +103,10 @@ namespace Boiler { namespace gltf
 		return matTexture;
 	};
 
-	Model load(const std::string &jsonData)
+	Model load(const std::string &gltfPath, const std::string &jsonData)
 	{
 		using namespace gltf;
-		Model model;
+		Model model(gltfPath);
 
 		Document document;
 		document.Parse(jsonData.c_str());
